@@ -1,0 +1,12 @@
+# eklair ios 
+
+Eklair ios poc using Kotlin/Native to embed eklair core.
+
+Need to be checked-out alonside eklair repository with the following layout:
+
+```
+...
+  | eklair (eklair repo)
+  | mobile (name does not matter)
+    |_ eklair-ios (this repo)
+```
