@@ -15,7 +15,7 @@ struct ContentView: View {
     @State var message: String = ""
     @State var hashedMessage: String = ""
     
-    let user = EklairUser(id: Uuid().fromString(s: UUID().uuidString))
+    let user = EklairUser(id:  UUID().uuidString)
     let logger = MessageLogger()
     
     
@@ -40,6 +40,11 @@ struct ContentView: View {
         formatter.timeStyle = .short
         let msg = MessageContainer(message: formatter.string(for: Date())!, counter: Int32(counter), identity: user)
         logger.log(msg: msg)
+        let queue = DispatchQueue.init(label: "actorQueue", qos: .userInitiated)
+        queue.async {
+            //self.logger.test()
+            //self.logger.channel()
+        }
         logger.nativeLog {
             NSLog("Swifty logging")
             return "Swift string \(type(of: self))"
