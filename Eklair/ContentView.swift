@@ -20,18 +20,19 @@ struct ContentView: View {
     let logger = MessageLogger()
     let queue = DispatchQueue(label: "actorQueue", qos: .userInitiated)
     
+    let group = DispatchGroup()
+    @State var msg: EklairActorMessage?
+    @State var nextMsg : Any?
+    @State var counter = 0
     
     var body: some View {
         VStack{
             Text("\(host)").lineLimit(nil).padding(.all)
-        Button(action: { self.test() }){
-            Text("Run Eklair [BOOT]")
-        }
-            Button(action: { self.withActor() }){
+            Button(action: withActor){
                 Text("Run Eklair [Actor]")
             }
-            Button(action: { self.channel() }){
-                Text("Run Eklair [Channel]")
+            Button(action: next){
+                Text("Next action")
             }
             TextField("Message", text: $message)
             Button(action: { self.hashMe() }){
@@ -44,12 +45,41 @@ struct ContentView: View {
     
     func withActor(){
         queue.async {
-            self.logger.withActor { host in
-                self.host = "Connected to \(host)"
+            self.logger.withActor { msg in
+                if let response = msg as? HostResponseMessage{
+                    self.host = "Connected to \(response.response)"
+                    return EklairObjects().none
+                }
+                print("Entering group")
+                self.group.enter()
+                self.msg = msg
+                self.group.wait(wallTimeout: .now() + 0.1)
+                
+                let response = self.nextMsg ?? EklairObjects().none
+                self.nextMsg = nil
+                return response
             }
         }
     }
     
+    func next() {
+        if !self.host.contains("@") {
+            nextMsg = EklairObjects().hostMsg
+        }else{
+            counter+=1
+            if counter >= 30 {
+                nextMsg = EklairObjects().disconnect
+            }else{
+                nextMsg = EklairObjects().ping
+            }
+        }
+        self.group.leave()
+    }
+    
+    
+    /*
+     Unused for the time being, to launch eclair using a basic channel impl
+     */
     func channel(){
         queue.async {
             self.logger.channel()
@@ -75,6 +105,9 @@ struct ContentView: View {
         
     }
     
+    /*
+     Unused for the time being, "old" boot launch
+     */
     func test() {
         let queue = DispatchQueue.init(label: "Eklair", qos: .background)
         queue.async {
