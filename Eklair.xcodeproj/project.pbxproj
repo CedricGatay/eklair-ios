@@ -217,7 +217,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/../../eklair/gradlew\" -p \"$SRCROOT/../../eklair/eklair-node\" createFatFramework \\\n-Dconfiguration.build.dir=\"$CONFIGURATION_BUILD_DIR\"  \\\n-Pkotlin.build.type=\"$KOTLIN_BUILD_TYPE\"\n";
+			shellScript = "cd \"$SRCROOT/../../eklair/\";\n./gradlew :eklair-node:createFatFramework \\\n-Dconfiguration.build.dir=\"$CONFIGURATION_BUILD_DIR\"  \\\n-Pkotlin.build.type=\"$KOTLIN_BUILD_TYPE\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -23,7 +23,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack{
-            Text("\(host)").lineLimit(nil)
+            Text("\(host)").lineLimit(nil).padding(.all)
         Button(action: { self.test() }){
             Text("Run Eklair [BOOT]")
         }
@@ -45,7 +45,7 @@ struct ContentView: View {
     func withActor(){
         queue.async {
             self.logger.withActor { host in
-                self.host = host
+                self.host = "Connected to \(host)"
             }
         }
     }
